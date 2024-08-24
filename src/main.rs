@@ -2,7 +2,6 @@ use macroquad::prelude::*;
 
 #[macroquad::main("Sudoku")]
 async fn main() {
-
     let block_size: f32 = 50.0;
 
     let mut row = None;
@@ -18,7 +17,7 @@ async fn main() {
         // draw buttons
         draw_buttons();
         // handle events
-        handle_events(&mut board, &mut row, &mut col, block_size);        
+        handle_events(&mut board, &mut row, &mut col, block_size);
         // next frame
         next_frame().await;
     }
@@ -94,7 +93,12 @@ fn draw_buttons() {
     draw_text("Exit", 605.0, 460.0, 50.0, BLACK);
 }
 
-fn handle_events(board: &mut [[Option<u8>; 9]; 9], row: &mut Option<i32>, col: &mut Option<i32>, block_size: f32) {
+fn handle_events(
+    board: &mut [[Option<u8>; 9]; 9],
+    row: &mut Option<i32>,
+    col: &mut Option<i32>,
+    block_size: f32,
+) {
     // LMB
     if is_mouse_button_pressed(MouseButton::Left) {
         let mouse_pos: (f32, f32) = mouse_position();
@@ -225,17 +229,24 @@ fn is_valid_entry(board: [[Option<u8>; 9]; 9], row: usize, col: usize, num: u8) 
 }
 
 fn solve(board: &mut [[Option<u8>; 9]; 9], row: usize, col: usize) -> bool {
-    if row == 9 { // board is full
+    if row == 9 {
+        // board is full
         return true;
-    } else if col == 9 { // column is full, go to next row
+    } else if col == 9 {
+        // column is full, go to next row
         return solve(board, row + 1, 0);
-    } else if board[row][col] != None { // if the square already has a number in it
+    } else if board[row][col] != None {
+        // if the square already has a number in it
         return solve(board, row, col + 1);
-    } else { // empty square on the board
-        for n in 1..10 { // try all numbers (1 - 9)
-            if is_valid_entry(*board, row, col, n) { // check is number is valid
+    } else {
+        // empty square on the board
+        for n in 1..10 {
+            // try all numbers (1 - 9)
+            if is_valid_entry(*board, row, col, n) {
+                // check is number is valid
                 board[row][col] = Some(n); // make move
-                if solve(board, row, col + 1) { // recursion
+                if solve(board, row, col + 1) {
+                    // recursion
                     return true;
                 }
                 board[row][col] = None; // undo move if its wrong
