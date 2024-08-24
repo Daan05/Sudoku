@@ -229,27 +229,32 @@ fn is_valid_entry(board: [[Option<u8>; 9]; 9], row: usize, col: usize, num: u8) 
 }
 
 fn solve(board: &mut [[Option<u8>; 9]; 9], row: usize, col: usize) -> bool {
+    // board is full
     if row == 9 {
-        // board is full
         return true;
-    } else if col == 9 {
-        // column is full, go to next row
+    }
+    // column is full, go to next row
+    else if col == 9 {
         return solve(board, row + 1, 0);
-    } else if board[row][col] != None {
-        // if the square already has a number in it
+    }
+    // if the square already has a number in it
+    else if board[row][col] != None {
         return solve(board, row, col + 1);
-    } else {
-        // empty square on the board
+    }
+    // empty square on the board
+    else {
+        // try all numbers (1 - 9)
         for n in 1..10 {
-            // try all numbers (1 - 9)
+            // check is number is valid
             if is_valid_entry(*board, row, col, n) {
-                // check is number is valid
-                board[row][col] = Some(n); // make move
+                // make move
+                board[row][col] = Some(n);
+                // go to next column
                 if solve(board, row, col + 1) {
-                    // recursion
                     return true;
                 }
-                board[row][col] = None; // undo move if its wrong
+                // undo move if its wrong
+                board[row][col] = None;
             }
         }
     }
